@@ -54,4 +54,8 @@ jspm_packages/
 *.tgz
 
 # Yarn Integrity file
-.yarn-integrity 
+.yarn-integrity
+
+# Postman Collections (may contain sensitive tokens)
+*.postman_collection.json
+weather.postman_collection.json 
