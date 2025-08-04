@@ -55,7 +55,3 @@ jspm_packages/
 
 # Yarn Integrity file
 .yarn-integrity
-
-# Postman Collections (may contain sensitive tokens)
-*.postman_collection.json
-weather.postman_collection.json 
