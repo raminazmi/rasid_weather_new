@@ -21,7 +21,7 @@ const LayoutWrapper = ({ children }) => {
     }
 
     const getHeaderBgColor = () => {
-        const whiteBgPages = ['/', '/contact']
+        const whiteBgPages = ['/', '/contact', '/login', '/register', '/terms']
 
         if (whiteBgPages.includes(pathname)) {
             return 'bg-rasid-blue'
