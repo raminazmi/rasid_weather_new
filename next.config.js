@@ -4,6 +4,9 @@ const nextConfig = {
         domains: ['openweathermap.org', 'rasidweather.com'],
     },
     trailingSlash: false,
+    experimental: {
+        serverComponentsExternalPackages: [],
+    },
 }
 
 module.exports = nextConfig 
