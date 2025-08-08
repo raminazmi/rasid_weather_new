@@ -9,7 +9,6 @@ const WeeklyForecastSection = () => {
     const [forecastData, setForecastData] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    // Mock data for 7-day forecast
     const mockForecastData = {
         location: "القاهرة",
         forecast: [
@@ -78,11 +77,9 @@ const WeeklyForecastSection = () => {
 
     const fetchForecastData = async () => {
         try {
-            // محاولة جلب البيانات من API
             const response = await fetch('https://rasidweather.com/api/weather?latitude=31.03408&longitude=30.46823&timezone=Africa/Cairo&country_code=eg')
             if (response.ok) {
                 const data = await response.json()
-                // تحويل بيانات API إلى التنسيق المطلوب
                 const formattedData = {
                     location: data.data?.location?.name || mockForecastData.location,
                     forecast: data.data?.forecast?.forecastday?.map((day, index) => {
@@ -148,17 +145,14 @@ const WeeklyForecastSection = () => {
                         lineColor="bg-rasid-blue-light"
                     />
 
-                    {/* Main Forecast Display */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
                         <div className="space-y-4">
                             {forecastData.forecast.map((day, index) => (
                                 <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                                    {/* Day and Date */}
                                     <div className="text-orange-500 text-lg font-semibold text-right min-w-[80px]">
                                         {day.day} {day.date}
                                     </div>
 
-                                    {/* Weather Icon */}
                                     <div className="w-8 h-8 mx-4">
                                         <img
                                             src={getWeatherIcon(day.icon)}
@@ -167,17 +161,14 @@ const WeeklyForecastSection = () => {
                                         />
                                     </div>
 
-                                    {/* Humidity */}
                                     <div className="text-gray-700 text-lg font-semibold w-16 text-center">
                                         {day.humidity}%
                                     </div>
 
-                                    {/* Min Temperature */}
                                     <div className="text-blue-400 text-lg font-semibold w-12 text-center">
                                         {day.minTemp}°
                                     </div>
 
-                                    {/* Temperature Range Bar */}
                                     <div className="flex-1 mx-4">
                                         <div className="h-2 bg-gradient-to-r from-yellow-200 to-yellow-400 rounded-full relative">
                                             <div
@@ -190,7 +181,6 @@ const WeeklyForecastSection = () => {
                                         </div>
                                     </div>
 
-                                    {/* Max Temperature */}
                                     <div className="text-gray-700 text-lg font-semibold w-12 text-center">
                                         {day.maxTemp}°
                                     </div>
@@ -199,7 +189,6 @@ const WeeklyForecastSection = () => {
                         </div>
                     </div>
 
-                    {/* More Button */}
                     <div className="text-center mt-8">
                         <CustomButton
                             text="اعرض المزيد للطقس الساعي ل كل يوم"

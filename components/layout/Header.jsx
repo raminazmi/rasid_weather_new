@@ -1,33 +1,80 @@
 'use client'
 
-import { Menu } from 'lucide-react'
+import { Menu, User, LogOut, Heart } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { getUserData, getToken, logout, isTokenValid } from '../../utils/api'
 
 const Header = ({ onToggleSidebar, headerBgColor = "bg-rasid-blue" }) => {
     const pathname = usePathname()
-    const [activeItem, setActiveItem] = useState('home')
+    const router = useRouter()
+    const [activeItem, setActiveItem] = useState('/')
+    const [user, setUser] = useState(null)
+    const [showUserMenu, setShowUserMenu] = useState(false)
 
     const menuItems = [
         { id: 'home', label: 'الرئيسية', href: '/' },
         { id: 'news', label: 'الاخبار', href: '/news' },
+        { id: 'subscriptions', label: 'الاشتراكات', href: '/subscriptions' },
         { id: 'terms', label: 'الشروط والاحكام', href: '/terms' },
         { id: 'contact', label: 'تواصل معنا', href: '/contact' },
     ]
 
     useEffect(() => {
-        // تحديث الحالة النشطة بناءً على المسار الحالي
         const currentItem = menuItems.find(item => item.href === pathname)
         if (currentItem) {
             setActiveItem(currentItem.id)
         } else {
             setActiveItem('home')
         }
-    }, [pathname])
 
-    const handleNavClick = (itemId) => {
+        checkUserData()
+
+        const handleClickOutside = (event) => {
+            if (showUserMenu && !event.target.closest('.user-menu')) {
+                setShowUserMenu(false)
+            }
+        }
+
+        const handleStorageChange = () => {
+            checkUserData()
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        window.addEventListener('storage', handleStorageChange)
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [pathname, showUserMenu])
+
+    const checkUserData = () => {
+        if (isTokenValid()) {
+            const userData = getUserData()
+            setUser(userData)
+        } else {
+            setUser(null)
+        }
+    }
+
+    const handleNavClick = (itemId, href, e) => {
+        e.preventDefault()
         setActiveItem(itemId)
+        router.push(href)
+    }
+
+    const handleLogin = () => {
+        router.push('/login')
+    }
+
+    const handleLogout = () => {
+        logout()
+        setUser(null)
+        setShowUserMenu(false)
+        router.push('/')
     }
 
     const isWhiteBg = headerBgColor === 'bg-white'
@@ -40,7 +87,6 @@ const Header = ({ onToggleSidebar, headerBgColor = "bg-rasid-blue" }) => {
         <header className="bg-rasid-blue lg:bg-transparent backdrop-blur-sm border-b rounded-b-xl md:rounded-b-none shadow-xl md:shadow-none border-white/20 fixed top-0 left-0 right-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
                     <div className="flex items-center gap-3">
                         <button
                             onClick={onToggleSidebar}
@@ -58,28 +104,99 @@ const Header = ({ onToggleSidebar, headerBgColor = "bg-rasid-blue" }) => {
                         />
                     </div>
 
-                    {/* Desktop Navigation */}
                     <nav className="hidden lg:flex items-center space-x-8 space-x-reverse">
                         {menuItems.map((item) => (
-                            <a
+                            <Link
                                 key={item.id}
                                 href={item.href}
-                                onClick={() => handleNavClick(item.id)}
+                                onClick={(e) => handleNavClick(item.id, item.href, e)}
                                 className={`${textColor} font-medium transition-colors duration-200 hover:text-rasid-orange font-custom ${activeItem === item.id
                                     ? `${activeBg} px-4 py-2 rounded-lg border`
                                     : `${hoverBg} px-4 py-2 rounded-lg`
                                     }`}
                             >
                                 {item.label}
-                            </a>
+                            </Link>
                         ))}
                     </nav>
 
-                    {/* Login Button */}
                     <div className="flex items-center">
-                        <a href="/login" className={`${isWhiteBg ? 'bg-rasid-blue text-white' : 'bg-rasid-blue-light text-white'} hover:bg-white/20 font-medium px-6 py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom`}>
-                            تسجيل دخول
-                        </a>
+                        {user ? (
+                            <div className="relative user-menu">
+                                <button
+                                    onClick={() => setShowUserMenu(!showUserMenu)}
+                                    className={`${textColor} flex items-center space-x-2 space-x-reverse hover:${hoverBg} px-3 py-2 rounded-lg transition-colors duration-200`}
+                                >
+                                    <div className="flex items-center space-x-2 space-x-reverse">
+                                        {user.avatar?.main ? (
+                                            <img
+                                                src={user.avatar.main}
+                                                alt={user.name || 'المستخدم'}
+                                                className="w-8 h-8 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-8 h-8 bg-rasid-orange rounded-full flex items-center justify-center">
+                                                <User size={16} className="text-white" />
+                                            </div>
+                                        )}
+                                        <span className={`text-sm text-black`}>
+                                            {user.name || user.email || 'مستخدم'}
+                                        </span>
+                                    </div>
+                                </button>
+
+                                {showUserMenu && (
+                                    <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                        <div className="px-4 py-2 border-b border-gray-200">
+                                            <p className="text-sm text-gray-600">{user.email}</p>
+                                            {user.isVerified === "1" && (
+                                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800 mt-1">
+                                                    موثق
+                                                </span>
+                                            )}
+                                        </div>
+                                        <Link
+                                            href="/profile"
+                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 space-x-reverse"
+                                            onClick={() => setShowUserMenu(false)}
+                                        >
+                                            <User size={16} />
+                                            <span>الملف الشخصي</span>
+                                        </Link>
+                                        <Link
+                                            href="/favorites"
+                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 space-x-reverse"
+                                            onClick={() => setShowUserMenu(false)}
+                                        >
+                                            <Heart size={16} />
+                                            <span>المفضلة</span>
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 space-x-reverse"
+                                        >
+                                            <LogOut size={16} />
+                                            <span>تسجيل الخروج</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="flex items-center space-x-2 space-x-reverse">
+                                <Link
+                                    href="/register"
+                                    className={`${isWhiteBg ? 'bg-rasid-orange text-white' : 'bg-rasid-orange text-white'} hover:bg-rasid-orange/90 font-medium px-4 py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom text-sm`}
+                                >
+                                    إنشاء حساب
+                                </Link>
+                                <button
+                                    onClick={handleLogin}
+                                    className={`${isWhiteBg ? 'bg-rasid-blue text-white' : 'bg-rasid-blue-light text-white'} hover:bg-white/20 font-medium px-4 py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom text-sm`}
+                                >
+                                    تسجيل دخول
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

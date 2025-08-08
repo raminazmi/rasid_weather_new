@@ -9,7 +9,6 @@ const MainText = ({
     highlightBgColor = "bg-rasid-blue",
     descriptionColor = "text-rasid-blue",
     lineColor = "bg-white",
-    // إضافة خصائص الموقع الجديدة
     showLocation = false,
     location = "",
     locationIconColor = "text-blue-300",
@@ -18,9 +17,7 @@ const MainText = ({
 }) => {
     return (
         <div className="text-center mb-8 md:mx-4">
-            {/* Location and Title Row */}
             <div className="text-center mb-8 md:mx-4">
-                {/* Top Lines */}
                 <div className="flex items-center justify-center">
                     <h1 className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${titleColor} px-4 sm:px-6 pe-4 sm:pe-6 font-custom flex items-center`}>
                         <span className={`${highlightBgColor} w-8 h-8 sm:w-10 sm:h-10 rounded-full ${highlightColor} flex items-end justify-end`}>
@@ -39,10 +36,7 @@ const MainText = ({
                             </div>
                         </h1>
                     )}
-
-
                 </div>
-
                 <p className={`${descriptionColor} text-sm sm:text-base font-custom leading-relaxed text-start ms-12 mt-2`}>
                     {description}
                 </p>

@@ -12,12 +12,12 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
     const menuItems = [
         { id: 'home', label: 'الرئيسية', href: '/' },
         { id: 'news', label: 'الاخبار', href: '/news' },
+        { id: 'subscriptions', label: 'الاشتراكات', href: '/subscriptions' },
         { id: 'terms', label: 'الشروط والاحكام', href: '/terms' },
         { id: 'contact', label: 'تواصل معنا', href: '/contact' },
     ]
 
     useEffect(() => {
-        // تحديث الحالة النشطة بناءً على المسار الحالي
         const currentItem = menuItems.find(item => item.href === pathname)
         if (currentItem) {
             setActiveItem(currentItem.id)
@@ -32,16 +32,13 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
 
     return (
         <>
-            {/* Mobile Menu Overlay */}
             {isOpen && (
                 <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose} />
             )}
 
-            {/* Mobile Menu */}
             {isOpen && (
                 <div className="lg:hidden fixed top-0 right-0 h-full w-80 bg-rasid-blue shadow-lg transform transition-transform duration-300 ease-in-out z-50">
                     <div className="flex flex-col h-full">
-                        {/* Close Button */}
                         <div className="p-4 border-b border-white/20">
                             <div className="flex items-center justify-between">
                                 <Image
@@ -60,7 +57,6 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
                             </div>
                         </div>
 
-                        {/* Navigation */}
                         <nav className="flex-1 p-4">
                             <div className="space-y-2">
                                 {menuItems.map((item) => (
@@ -79,7 +75,6 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
                                 ))}
                             </div>
 
-                            {/* Location Button */}
                             <div className="mt-4">
                                 <button
                                     onClick={() => {
@@ -92,7 +87,6 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
                                 </button>
                             </div>
 
-                            {/* Favorites */}
                             {favorites && favorites.length > 0 && (
                                 <div className="mt-4">
                                     <h4 className="text-white/80 text-sm font-medium mb-2 px-3 font-custom">المفضلة</h4>
@@ -104,7 +98,6 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
                                 </div>
                             )}
 
-                            {/* Recent Searches */}
                             {recentSearches && recentSearches.length > 0 && (
                                 <div className="mt-4">
                                     <h4 className="text-white/80 text-sm font-medium mb-2 px-3 font-custom">البحث الأخير</h4>
@@ -116,7 +109,6 @@ const Sidebar = ({ isOpen, onClose, onLocationClick, favorites, recentSearches }
                                 </div>
                             )}
 
-                            {/* Login Button */}
                             <div className="mt-6">
                                 <a href="/login" className="block w-full bg-rasid-blue-light hover:bg-white/20 text-white font-medium px-6 py-2 rounded-lg transition-colors duration-200 border border-white/20 font-custom text-center">
                                     تسجيل دخول

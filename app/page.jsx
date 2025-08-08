@@ -15,9 +15,6 @@ import WeatherSection from '../components/sections/WeatherSection'
 import WeeklyForecastSection from '../components/sections/WeeklyForecastSection'
 import LatestNewsSection from '../components/sections/LatestNewsSection'
 import WeatherNewsBanner from '../components/sections/WeatherNewsBanner'
-import WeatherCard from '../components/ui/WeatherCard'
-import ForecastCard from '../components/ui/ForecastCard'
-import { Loader2, AlertCircle } from 'lucide-react'
 
 export default function HomePage() {
     const dispatch = useDispatch()
@@ -64,19 +61,10 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen">
-            {/* Hero Section */}
             <HeroSection onSearch={handleSearch} />
-
-            {/* New Weather Section */}
             <WeatherSection />
-
-            {/* Weekly Forecast Section */}
             <WeeklyForecastSection />
-
-            {/* Latest News Section */}
             <LatestNewsSection />
-
-            {/* Weather News Banner */}
             <div className="px-4 py-8 pb-48 bg-rasid-gray-light">
                 <div className="max-w-6xl mx-auto">
                     <WeatherNewsBanner />

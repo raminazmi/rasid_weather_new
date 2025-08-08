@@ -10,14 +10,13 @@ const WeatherSection = () => {
     const [loading, setLoading] = useState(true)
     const [currentHour, setCurrentHour] = useState(0)
 
-    // Mock data for demonstration (since API might not be available)
     const mockWeatherData = {
         location: "القاهرة",
         current: {
             temp: 36,
             feels_like: 29,
             condition: "صافي",
-            icon: "sunny-rainy", // سيتم استخدام الأيقونة المناسبة
+            icon: "sunny-rainy",
             min: 22,
             max: 30
         },
@@ -43,11 +42,9 @@ const WeatherSection = () => {
 
     const fetchWeatherData = async () => {
         try {
-            // محاولة جلب البيانات من API
             const response = await fetch('https://rasidweather.com/api/weather?latitude=31.03408&longitude=30.46823&timezone=Africa/Cairo&country_code=eg')
             if (response.ok) {
                 const data = await response.json()
-                // تحويل بيانات API إلى التنسيق المطلوب
                 const formattedData = {
                     location: data.data?.location?.name || mockWeatherData.location,
                     current: {
@@ -113,13 +110,10 @@ const WeatherSection = () => {
 
     return (
         <section className="relative bg-rasid-gray-light min-h-screen overflow-hidden">
-            {/* Background Pattern */}
             <div className="absolute bottom-[63%] inset-0 bg-[url('/images/bg_section.svg')] bg-cover -rotate-180 scale-x-[-1]"></div>
 
             <div className="relative z-10 px-4 py-8">
-                {/* Current Weather Section */}
                 <div className="max-w-4xl mx-auto mb-12">
-                    {/* Header using MainText */}
                     <MainText
                         title="طقس الان"
                         titleHighlight="الـ"
@@ -133,7 +127,6 @@ const WeatherSection = () => {
                         lineColor="bg-white"
                     />
 
-                    {/* Main Weather Display */}
                     <div className="mb-24">
                         <div className="flex items-center justify-center gap-2">
                             <div className="relative">
@@ -163,7 +156,6 @@ const WeatherSection = () => {
 
                         </div>
 
-                        {/* Min/Max Temperature */}
                         <div className="flex items-center justify-center gap-8 mt-6">
                             <div className="text-white text-center">
                                 <div className="text-2xl font-bold">{weatherData.current.min}°</div>
@@ -177,10 +169,8 @@ const WeatherSection = () => {
                         </div>
                     </div>
 
-                    {/* Weather Details Cards */}
                     <div className="grid grid-cols-1 md:flex justify-center items-center gap-14 mb-12">
                         <div className="relative flex justify-center items-center w-36 h-36 group bg-white/40 backdrop-blur-sm rounded-full p-6 text-center border-2 border-blue-400 hover:bg-white/20 transition-colors cursor-pointer">
-                            {/* Tooltip */}
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-rasid-blue-light text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
                                 نسبة الرطوبة في الهواء
                                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-rasid-blue-light"></div>
@@ -196,7 +186,6 @@ const WeatherSection = () => {
                         </div>
 
                         <div className="relative flex justify-center items-center w-36 h-36 group bg-white/40 backdrop-blur-sm rounded-full p-6 text-center border-2 border-rasid-orange-dark hover:bg-white/20 transition-colors cursor-pointer">
-                            {/* Tooltip */}
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-rasid-orange-dark text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
                                 سرعة الرياح الحالية
                                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-rasid-orange-dark"></div>
@@ -212,7 +201,6 @@ const WeatherSection = () => {
                         </div>
 
                         <div className="relative flex justify-center items-center w-36 h-36 group bg-white/40 backdrop-blur-sm rounded-full p-6 text-center border-2 border-rasid-green hover:bg-white/20 transition-colors cursor-pointer">
-                            {/* Tooltip */}
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-rasid-green text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
                                 مدى الرؤية الحالي
                                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-rasid-green"></div>
@@ -242,19 +230,13 @@ const WeatherSection = () => {
                         lineColor="bg-gray-300"
                     />
                 </div>
-                {/* Hourly Forecast Section */}
                 <div className="max-w-6xl mx-auto">
-                    {/* Header using MainText */}
-
-
-                    {/* Weather Summary */}
                     <div className="flex justify-end mb-6">
                         <div className="bg-blue-500 rounded-full px-4 py-2 text-white text-sm">
                             صاف بشكل كبير
                         </div>
                     </div>
 
-                    {/* Hourly Forecast Cards */}
                     <div className="relative">
                         <button
                             onClick={() => setCurrentHour(prev => Math.max(0, prev - 1))}
@@ -270,7 +252,6 @@ const WeatherSection = () => {
                                     key={index}
                                     className="relative bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center min-w-[120px] hover:bg-white/20 transition-colors cursor-pointer group"
                                 >
-                                    {/* Tooltip */}
                                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-black/80 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
                                         {hour.time} - {hour.temp}°
                                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/80"></div>
@@ -298,7 +279,6 @@ const WeatherSection = () => {
                         </button>
                     </div>
 
-                    {/* More Button */}
                     <div className="text-center mt-8">
                         <CustomButton
                             text="المزيد"

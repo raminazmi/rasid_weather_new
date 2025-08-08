@@ -5,7 +5,6 @@ import MainText from '../../components/MainText'
 const AboutPage = () => {
     return (
         <div className="min-h-screen relative pt-32 pb-44 bg-gradient-to-b from-blue-50 to-blue-100">
-            {/* Content */}
             <div className="relative z-10">
                 <MainText
                     title="من نحن"

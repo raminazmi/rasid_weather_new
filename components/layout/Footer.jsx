@@ -5,9 +5,7 @@ import Image from 'next/image'
 const Footer = () => {
     return (
         <section className="relative bg-rasid-orange">
-            {/* Main Orange Section */}
             <section className="relative bg-rasid-orange rounded-t-3xl -top-5">
-                {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
                         backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
@@ -24,7 +22,6 @@ const Footer = () => {
                                 </h2>
 
                                 <div className="flex sm:flex-row flex-wrap gap-4 justify-center lg:justify-start">
-                                    {/* Google Play Button */}
                                     <button className="w-fit flex justify-center items-center bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
                                         <div className="text-left">
                                             <div className="text-xs font-medium">GET IT ON</div>
@@ -39,7 +36,6 @@ const Footer = () => {
                                         />
                                     </button>
 
-                                    {/* App Store Button */}
                                     <button className="w-fit flex justify-center items-center bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
                                         <div className="text-left">
                                             <div className="text-xs font-medium">GET IT ON</div>
@@ -70,11 +66,12 @@ const Footer = () => {
                                 </div>
                             </form>
 
-                            {/* Footer Links */}
                             <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-white">
                                 <a href="/" className="hover:text-gray-200 transition-colors font-custom">الرئيسية</a>
                                 <div className="w-px h-4 bg-white/30"></div>
                                 <a href="/news" className="hover:text-gray-200 transition-colors font-custom">الاخبار</a>
+                                <div className="w-px h-4 bg-white/30"></div>
+                                <a href="/subscriptions" className="hover:text-gray-200 transition-colors font-custom">الاشتراكات</a>
                                 <div className="w-px h-4 bg-white/30"></div>
                                 <a href="/terms" className="hover:text-gray-200 transition-colors font-custom">الشروط والاحكام</a>
                                 <div className="w-px h-4 bg-white/30"></div>

@@ -37,7 +37,6 @@ const ForecastCard = ({ forecast }) => {
         })
     }
 
-    // Group forecast by day
     const groupedForecast = forecast.list.reduce((acc, item) => {
         const date = new Date(item.dt * 1000).toDateString()
         if (!acc[date]) {

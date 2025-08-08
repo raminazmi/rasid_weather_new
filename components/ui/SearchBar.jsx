@@ -30,7 +30,6 @@ const SearchBar = ({ onSearch, placeholder = "ابحث عن مدينة..." }) =>
     return () => clearTimeout(timer)
   }, [query])
 
-  // Mock cities data - replace with actual API call
   const cities = [
     'القاهرة، مصر',
     'الإسكندرية، مصر',
@@ -82,8 +81,6 @@ const SearchBar = ({ onSearch, placeholder = "ابحث عن مدينة..." }) =>
       onSearch(searchTerm)
       setQuery('')
       setShowSuggestions(false)
-
-      // Add to recent searches
       const newSearch = {
         city: searchTerm,
         timestamp: new Date().toISOString(),
@@ -130,10 +127,8 @@ const SearchBar = ({ onSearch, placeholder = "ابحث عن مدينة..." }) =>
         </div>
       </form>
 
-      {/* Suggestions Dropdown */}
       {showSuggestions && (suggestions.length > 0 || recentSearches.length > 0) && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-60 overflow-y-auto">
-          {/* Recent Searches */}
           {recentSearches.length > 0 && query.length <= 1 && (
             <div className="p-2">
               <div className="text-xs font-medium text-gray-500 mb-2 px-2">البحث الأخير</div>
@@ -150,7 +145,6 @@ const SearchBar = ({ onSearch, placeholder = "ابحث عن مدينة..." }) =>
             </div>
           )}
 
-          {/* Search Suggestions */}
           {suggestions.length > 0 && (
             <div className="p-2">
               {recentSearches.length > 0 && query.length <= 1 && (

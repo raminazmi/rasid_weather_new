@@ -17,7 +17,6 @@ const LayoutWrapper = ({ children }) => {
     }
 
     const handleLocationClick = () => {
-        // يمكن إضافة منطق تحديد الموقع هنا
         console.log('موقعي الحالي')
     }
 

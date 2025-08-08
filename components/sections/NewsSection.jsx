@@ -1,68 +1,75 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Share2, Bookmark, MessageCircle, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import CustomButton from '../ui/CustomButton'
+import { fetchHomeNews, fetchFeaturedNews, toggleArticleLike, toggleArticleFavorite, isTokenValid } from '../../utils/api'
 
-const NewsSection = ({ news, loading }) => {
-    const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 6
+const NewsSection = () => {
+    const [news, setNews] = useState([])
+    const [displayedNews, setDisplayedNews] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [error, setError] = useState(null)
+    const [itemsToShow, setItemsToShow] = useState(8)
+    const itemsPerLoad = 8
 
-    // Mock data for demonstration (since API might not be available)
-    const mockNews = [
-        {
-            id: 1,
-            title: "منخفض حراري ديناميكي يجلب هبات رياح وموجات غبار محتملة للعراق والكويت وشمال شرق السعودية",
-            image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop",
-            category: "اخبار محلية",
-            date: "الجمعة، 6 يونيو 2025 10:03 ص",
-            comments: 2,
-            featured: true
-        },
-        {
-            id: 2,
-            title: "نشاط خلايا صيفية محتمل في المناطق الساحلية العمانية",
-            image: "https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?w=400&h=300&fit=crop",
-            category: "اخبار محلية",
-            date: "الجمعة، 6 يونيو 2025 09:45 ص",
-            comments: 1,
-            featured: false
-        },
-        {
-            id: 3,
-            title: "منخفض جوي بارد يؤثر على درجات الحرارة في السعودية ودول الخليج خلال عيد الأضحى",
-            image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop",
-            category: "اخبار محلية",
-            date: "الجمعة، 6 يونيو 2025 09:30 ص",
-            comments: 3,
-            featured: true
-        },
-        {
-            id: 4,
-            title: "توقعات بتحسن الأحوال الجوية في الأيام القادمة",
-            image: "https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=400&h=300&fit=crop",
-            category: "اخبار محلية",
-            date: "الجمعة، 6 يونيو 2025 09:15 ص",
-            comments: 0,
-            featured: false
-        },
-        {
-            id: 5,
-            title: "تحذيرات من عواصف رملية في مناطق متفرقة",
-            image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop",
-            category: "اخبار محلية",
-            date: "الجمعة، 6 يونيو 2025 09:00 ص",
-            comments: 1,
-            featured: false
+    useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                setLoading(true)
+                const data = await fetchHomeNews('sa')
+
+                if (data.success && data.body) {
+                    let allNews = []
+                    data.body.forEach(section => {
+                        if (section.list && section.list.data) {
+                            allNews = [...allNews, ...section.list.data]
+                        }
+                    })
+                    setNews(allNews)
+                    setDisplayedNews(allNews.slice(0, itemsToShow))
+                } else {
+                    throw new Error('فشل في جلب البيانات')
+                }
+            } catch (err) {
+                console.error('خطأ في جلب الأخبار:', err)
+                setError(err.message)
+                try {
+                    const fallbackData = await fetchFeaturedNews('sa')
+                    if (fallbackData.success && fallbackData.body && fallbackData.body.data) {
+                        setNews(fallbackData.body.data)
+                        setDisplayedNews(fallbackData.body.data.slice(0, itemsToShow))
+                    }
+                } catch (fallbackErr) {
+                    console.error('خطأ في جلب البيانات البديلة:', fallbackErr)
+                }
+            } finally {
+                setLoading(false)
+            }
         }
-    ]
 
-    const displayNews = news.length > 0 ? news : mockNews
-    const totalPages = Math.ceil(displayNews.length / itemsPerPage)
-    const startIndex = (currentPage - 1) * itemsPerPage
-    const endIndex = startIndex + itemsPerPage
-    const currentNews = displayNews.slice(startIndex, endIndex)
+        fetchNews()
+    }, [])
+
+    useEffect(() => {
+        if (news.length > 0) {
+            setDisplayedNews(news.slice(0, itemsToShow))
+        }
+    }, [itemsToShow, news])
+
+    const loadMoreNews = async () => {
+        setLoadingMore(true)
+
+        setTimeout(() => {
+            const newItemsToShow = itemsToShow + itemsPerLoad
+            setItemsToShow(newItemsToShow)
+            setLoadingMore(false)
+        }, 500)
+    }
+
+    const hasMoreNews = itemsToShow < news.length
 
     if (loading) {
         return (
@@ -83,66 +90,176 @@ const NewsSection = ({ news, loading }) => {
         )
     }
 
+    if (error && displayedNews.length === 0) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div className="text-center">
+                    <h2 className="text-xl font-bold text-white mb-4">عذراً، حدث خطأ في تحميل الأخبار</h2>
+                    <p className="text-white/70 mb-4">يرجى المحاولة مرة أخرى لاحقاً</p>
+                    <CustomButton
+                        text="إعادة المحاولة"
+                        onClick={() => window.location.reload()}
+                    />
+                </div>
+            </div>
+        )
+    }
+
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            {/* News Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                {currentNews.map((item) => (
+                {displayedNews.map((item) => (
                     <NewsCard key={item.id} item={item} />
                 ))}
             </div>
 
-            <div className="text-center">
-                <CustomButton
-                    text="المزيد"
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    icon={<ArrowLeft className="w-5 h-5" />}
-                />
-            </div>
+            {hasMoreNews && (
+                <div className="text-center">
+                    <CustomButton
+                        text={loadingMore ? "جاري التحميل..." : "عرض المزيد"}
+                        onClick={loadMoreNews}
+                        icon={loadingMore ?
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> :
+                            <ArrowLeft className="w-5 h-5" />
+                        }
+                        disabled={loadingMore}
+                    />
+                </div>
+            )}
+
+            {!hasMoreNews && displayedNews.length > 0 && (
+                <div className="text-center">
+                    <p className="text-black/70 font-custom">
+                        تم عرض جميع الأخبار المتاحة ({displayedNews.length} من {news.length})
+                    </p>
+                </div>
+            )}
         </section>
     )
 }
 
 const NewsCard = ({ item }) => {
-    const [isLiked, setIsLiked] = useState(false)
-    const [isBookmarked, setIsBookmarked] = useState(false)
+    const [isLiked, setIsLiked] = useState(item.is_liked || false)
+    const [isBookmarked, setIsBookmarked] = useState(item.has_favorited || false)
+    const [likesCount, setLikesCount] = useState(item.count_likes || 0)
+    const [isLoading, setIsLoading] = useState(false)
+    const newsImage = item.main_image?.main || item.main_image?.thumb || item.image
+    const newsTitle = item.title
+    const newsCategory = item.categories?.[0]?.title || item.category || "أخبار عامة"
+    const newsDate = item.created_at ? new Date(item.created_at).toLocaleDateString('ar-SA', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    }) : item.date
+    const commentsCount = item.count_comments || item.comments || 0
+    const viewsCount = item.views || 0
+
+    // دالة للتعامل مع الإعجاب
+    const handleLike = async (e) => {
+        e.preventDefault()
+
+        if (!isTokenValid()) {
+            // إعادة توجيه لصفحة تسجيل الدخول
+            window.location.href = '/login'
+            return
+        }
+
+        if (isLoading) return
+
+        const newLikedState = !isLiked
+        const oldLikesCount = likesCount
+
+        setIsLiked(newLikedState)
+        setLikesCount(prev => newLikedState ? Number(prev) + 1 : Math.max(0, prev - 1))
+        setIsLoading(true)
+
+        try {
+            await toggleArticleLike(item.id, newLikedState)
+        } catch (error) {
+            console.error('Error toggling like:', error)
+            setIsLiked(!newLikedState)
+            setLikesCount(oldLikesCount)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    // دالة للتعامل مع المفضلة
+    const handleBookmark = async (e) => {
+        e.preventDefault()
+
+        if (!isTokenValid()) {
+            // إعادة توجيه لصفحة تسجيل الدخول
+            window.location.href = '/login'
+            return
+        }
+
+        if (isLoading) return
+
+        const newBookmarkedState = !isBookmarked
+
+        // تحديث الحالة مباشرة
+        setIsBookmarked(newBookmarkedState)
+        setIsLoading(true)
+
+        try {
+            await toggleArticleFavorite(item.id, newBookmarkedState)
+        } catch (error) {
+            console.error('Error toggling favorite:', error)
+            // إعادة الحالة السابقة في حالة الخطأ
+            setIsBookmarked(!newBookmarkedState)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     return (
         <Link href={`/news/${item.id}`} className="block">
             <div className="rounded-xl overflow-hidden transition-all duration-300 hover:scale-105">
-                {/* Image Container */}
                 <div className="relative">
                     <img
-                        src={item.image}
-                        alt={item.title}
+                        src={newsImage}
+                        alt={newsTitle}
                         className="rounded-xl w-full h-48 object-cover"
+                        onError={(e) => {
+                            e.target.src = "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop"
+                        }}
                     />
 
-                    {/* Category Badge */}
-                    <div className="absolute top-2 start-3">
-                        <span className="text-white text-sm px-2 rounded-full font-semibold font-custom">
-                            {item.category}
+                    <div className="absolute top-2 start-3 w-20 h-6 pb-1 bg-black/50 rounded-full font-semibold font-custom flex items-center justify-center">
+                        <span className="text-white text-xs">
+                            {newsCategory}
                         </span>
                     </div>
 
-                    {/* Action Icons */}
+                    {item.is_featured && (
+                        <div className="absolute top-2 end-3 w-12 h-5 pb-1 bg-red-500 flex items-center justify-center rounded-full font-semibold font-custom  text-center">
+                            <span className="text-white text-xs">
+                                مميز
+                            </span>
+                        </div>
+                    )}
+
                     <div className="absolute bottom-3 left-3 w-[91%] flex justify-between items-center gap-2">
                         <button
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setIsBookmarked(!isBookmarked)
-                            }}
-                            className={`p-2 rounded-full transition-colors ${isBookmarked ? 'bg-yellow-500 text-white' : 'bg-transparent text-white hover:bg-white/30'
+                            onClick={handleBookmark}
+                            disabled={isLoading}
+                            className={`p-2 rounded-full transition-colors disabled:opacity-50 ${isBookmarked
+                                ? 'bg-yellow-500 text-white'
+                                : 'bg-black/30 text-white hover:bg-yellow-500/70'
                                 }`}
                         >
                             <Bookmark className="w-4 h-4" />
                         </button>
                         <button
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setIsLiked(!isLiked)
-                            }}
-                            className={`p-2 rounded-full transition-colors ${isLiked ? 'bg-red-500 text-white' : 'bg-transparent text-white hover:bg-white/30'
+                            onClick={handleLike}
+                            disabled={isLoading}
+                            className={`p-2 rounded-full transition-colors disabled:opacity-50 ${isLiked
+                                ? 'bg-red-500 text-white'
+                                : 'bg-black/30 text-white hover:bg-red-500/70'
                                 }`}
                         >
                             <Share2 className="w-4 h-4" />
@@ -150,17 +267,28 @@ const NewsCard = ({ item }) => {
                     </div>
                 </div>
 
-                {/* Content */}
                 <div className="p-2 py-4">
                     <h3 className="text-rasid-orange-dark font-custom text-md font-semibold mb-3 line-clamp-3">
-                        {item.title}
+                        {newsTitle}
                     </h3>
 
-                    <div className="flex items-center justify-between gap-2 bg-white w-fit p-1 px-2 rounded-full text-rasid-orange-dark text-xs">
-                        <span className="font-custom">{item.date}</span>
-                        <div className="flex items-center justify-start gap-1">
-                            <MessageCircle className="w-3.5 h-3.5 mt-0.5" />
-                            <span className="font-custom">{item.comments}</span>
+                    <div className="flex items-center justify-between gap-2 bg-white w-full p-2 px-3 rounded-full text-rasid-orange-dark text-xs">
+                        <span className="font-custom truncate flex-1">{newsDate}</span>
+                        <div className="flex items-center justify-end gap-3 flex-shrink-0">
+                            <div className="flex items-center gap-1">
+                                <MessageCircle className="w-3.5 h-3.5" />
+                                <span className="font-custom">{commentsCount}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <Share2 className={`w-3.5 h-3.5 ${isLiked ? 'text-red-500' : ''}`} />
+                                <span className="font-custom">{likesCount}</span>
+                            </div>
+                            {viewsCount > 0 && (
+                                <div className="flex items-center gap-1">
+                                    <span className="font-custom text-xs">👁</span>
+                                    <span className="font-custom">{viewsCount}</span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
