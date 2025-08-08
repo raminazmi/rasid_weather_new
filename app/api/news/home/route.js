@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
 
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
-
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url)
@@ -24,9 +21,5 @@ export async function GET(request) {
         }
     } catch (error) {
         console.error('API Error:', error)
-        return NextResponse.json(
-            { error: 'Failed to fetch home news' },
-            { status: 500 }
-        )
     }
 }

@@ -1,16 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['openweathermap.org'],
+        domains: ['openweathermap.org', 'rasidweather.com'],
     },
-    // Remove output standalone for Netlify
-    trailingSlash: true,
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
-    typescript: {
-        ignoreBuildErrors: true,
-    }
+    trailingSlash: false,
 }
 
 module.exports = nextConfig 
