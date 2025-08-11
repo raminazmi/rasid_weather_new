@@ -15,12 +15,16 @@ const LatestNewsSection = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768)
+            if (typeof window !== 'undefined') {
+                setIsMobile(window.innerWidth < 768)
+            }
         }
 
         handleResize()
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', handleResize)
+            return () => window.removeEventListener('resize', handleResize)
+        }
     }, [])
 
     useEffect(() => {
@@ -183,7 +187,7 @@ const LatestNewsSection = () => {
                             <div
                                 className="flex gap-4 md:gap-6 transition-transform duration-500 ease-in-out"
                                 style={{
-                                    transform: `translateX(${currentSlide * (isMobile ? (window.innerWidth - 64 + 16) : (250 + 24))}px)`
+                                    transform: `translateX(${currentSlide * (isMobile ? 300 : 274)}px)`
                                 }}
                             >
                                 {newsData.map((item, index) => (
