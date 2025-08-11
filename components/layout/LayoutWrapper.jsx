@@ -43,7 +43,7 @@ const LayoutWrapper = ({ children }) => {
                 favorites={favorites || []}
                 recentSearches={searchHistory || []}
             />
-            <main className={`transition-all duration-300 ${bannerVisible ? "pt-[124px]" : "-pt-[12px]"}`}>
+            <main className={`transition-all duration-300 ${bannerVisible ? "pt-[124px]" : "pt-[60px]"}`}>
                 {children}
             </main>
             <Footer />
