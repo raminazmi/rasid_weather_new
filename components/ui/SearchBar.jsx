@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useState, useEffect } from 'react'
 import { Search, MapPin, X } from 'lucide-react'
 
 const SearchBar = ({ onSearch, placeholder = "ابحث عن مدينة..." }) => {
