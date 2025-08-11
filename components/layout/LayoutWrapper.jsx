@@ -6,11 +6,14 @@ import { useSelector } from 'react-redux'
 import Header from './Header'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
+import AppBanner from '../ui/AppBanner'
+import { useAppBanner } from '../../hooks/useAppBanner'
 
 const LayoutWrapper = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const pathname = usePathname()
     const { favorites, searchHistory } = useSelector((state) => state.weather)
+    const { isVisible: bannerVisible, closeBanner } = useAppBanner()
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen)
@@ -31,6 +34,7 @@ const LayoutWrapper = ({ children }) => {
 
     return (
         <>
+            <AppBanner isVisible={bannerVisible} onClose={closeBanner} />
             <Header onToggleSidebar={toggleSidebar} headerBgColor={getHeaderBgColor()} />
             <Sidebar
                 isOpen={sidebarOpen}
@@ -39,7 +43,7 @@ const LayoutWrapper = ({ children }) => {
                 favorites={favorites || []}
                 recentSearches={searchHistory || []}
             />
-            <main>
+            <main className={`transition-all duration-300 ${bannerVisible ? "pt-[124px]" : "-pt-[12px]"}`}>
                 {children}
             </main>
             <Footer />

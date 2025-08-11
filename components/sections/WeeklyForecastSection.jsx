@@ -149,12 +149,11 @@ const WeeklyForecastSection = () => {
 
     if (loading) {
         return (
-            <div className="relative bg-gradient-to-br from-orange-100 to-blue-100 min-h-screen">
-                <div className="absolute inset-0 bg-[url('/images/bg_section.svg')] bg-cover bg-center opacity-10"></div>
+            <section className="relative bg-rasid-gray-light overflow-hidden">
                 <div className="relative z-10 flex items-center justify-center min-h-screen">
                     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-400"></div>
                 </div>
-            </div>
+            </section>
         )
     }
 
