@@ -89,11 +89,13 @@ const LatestNewsSection = () => {
 
     if (loading) {
         return (
-            <section className="relative bg-rasid-blue py-24">
+            <section className="relative bg-rasid-gray-light overflow-hidden py-12">
+                <div className="absolute inset-0 bg-[url('/images/bg_section.svg')] bg-cover"></div>
+
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="max-w-6xl mx-auto">
                         <MainText
-                            title="أحـدث الأخبار"
+                            title="ر اخبار الطقس"
                             titleHighlight="اخـ"
                             titleColor="text-white"
                             highlightColor="text-white"
@@ -123,11 +125,13 @@ const LatestNewsSection = () => {
 
     if (newsData.length === 0) {
         return (
-            <section className="relative bg-rasid-blue py-24">
+            <section className="relative bg-rasid-gray-light overflow-hidden py-12">
+                <div className="absolute inset-0 bg-[url('/images/bg_section.svg')] bg-cover"></div>
+
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="max-w-6xl mx-auto text-center">
                         <MainText
-                            title="أحـدث الأخبار"
+                            title="ر اخبار الطقس"
                             titleHighlight="اخـ"
                             titleColor="text-white"
                             highlightColor="text-white"

@@ -341,7 +341,6 @@ const WeatherSection = () => {
                                 }}
                             >
                                 {weatherData.hourly.map((hour, index) => {
-                                    // التحقق من تغيير اليوم
                                     const currentHourDate = new Date(hour.time_epoch || Date.now() + (index * 60 * 60 * 1000))
                                     const prevHourDate = index > 0 ? new Date((weatherData.hourly[index - 1].time_epoch || Date.now() + ((index - 1) * 60 * 60 * 1000))) : null
                                     const isDayChange = prevHourDate && currentHourDate.getDate() !== prevHourDate.getDate()
