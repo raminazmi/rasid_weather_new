@@ -95,13 +95,15 @@ const Header = ({ onToggleSidebar, headerBgColor = "bg-rasid-blue" }) => {
                             <Menu size={24} />
                         </button>
 
-                        <Image
-                            src="/images/logo.svg"
-                            alt="راصد ويذر"
-                            width={120}
-                            height={48}
-                            className="hidden lg:flex h-12 w-auto"
-                        />
+                        <div className="hidden lg:flex flex-shrink-0 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                            <Image
+                                src="/images/logo.svg"
+                                alt="راصد ويذر"
+                                width={32}
+                                height={32}
+                                className="h-10 w-auto"
+                            />
+                        </div>
                     </div>
 
                     <nav className="hidden lg:flex items-center space-x-8 space-x-reverse">
@@ -185,13 +187,13 @@ const Header = ({ onToggleSidebar, headerBgColor = "bg-rasid-blue" }) => {
                             <div className="flex items-center space-x-2 space-x-reverse">
                                 <Link
                                     href="/register"
-                                    className={`${isWhiteBg ? 'bg-rasid-orange text-white' : 'bg-rasid-orange text-white'} hover:bg-rasid-orange/90 font-medium px-4 py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom text-sm`}
+                                    className={`${isWhiteBg ? 'bg-rasid-orange text-white' : 'bg-rasid-orange text-white'} hover:bg-rasid-orange/90 text-sm md:text-md px-2 py-1 md:px-4 md:py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom text-sm`}
                                 >
                                     إنشاء حساب
                                 </Link>
                                 <button
                                     onClick={handleLogin}
-                                    className={`${isWhiteBg ? 'bg-rasid-blue text-white' : 'bg-rasid-blue-light text-white'} hover:bg-white/20 font-medium px-4 py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom text-sm`}
+                                    className={`${isWhiteBg ? 'bg-rasid-blue text-white' : 'bg-rasid-blue-light text-white'} hover:bg-white/20 text-sm md:text-md px-2 py-1 md:px-4 md:py-2 rounded-lg transition-colors duration-200 border ${borderColor} font-custom text-sm`}
                                 >
                                     تسجيل دخول
                                 </button>

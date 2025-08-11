@@ -34,7 +34,7 @@ const AppBanner = ({ isVisible, onClose }) => {
                                 alt="راصد ويذر"
                                 width={32}
                                 height={32}
-                                className="w-8 h-8"
+                                className="h-10 w-auto"
                             />
                         </div>
 
