@@ -333,7 +333,7 @@ const WeatherSection = () => {
                             <div
                                 className="flex gap-4 transition-transform duration-500 ease-in-out"
                                 style={{
-                                    transform: `translateX(${currentHour * (isMobile ? (window.innerWidth - 64 + 16) : (140 + 16))}px)`
+                                    transform: `translateX(${currentHour * (isMobile ? 300 : 156)}px)`
                                 }}
                             >
                                 {weatherData.hourly.map((hour, index) => {
