@@ -137,13 +137,6 @@ const NewsDetailPage = () => {
                 const relatedNewsData = await fetchRelatedNews()
                 newsDetail.relatedNews = relatedNewsData
 
-                console.log('Related News Data:', {
-                    totalRelatedNews: relatedNewsData.length,
-                    source: 'fetchHomeNews API (same as NewsSection)',
-                    currentNewsId: newsData.id,
-                    relatedNewsIds: relatedNewsData.map(item => item.id).slice(0, 5) // أول 5 فقط للعرض
-                })
-
                 setNews(newsDetail)
                 setRelatedNewsLoading(false)
 
@@ -553,6 +546,7 @@ const NewsDetailPage = () => {
                                             onClick={() => { }}
                                             type="submit"
                                             variant="primary"
+                                            loading={submittingComment}
                                             disabled={submittingComment}
                                         />
                                     </div>

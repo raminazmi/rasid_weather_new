@@ -118,10 +118,7 @@ const NewsSection = () => {
                     <CustomButton
                         text={loadingMore ? "جاري التحميل..." : "عرض المزيد"}
                         onClick={loadMoreNews}
-                        icon={loadingMore ?
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> :
-                            <ArrowLeft className="w-5 h-5" />
-                        }
+                        loading={loadingMore}
                         disabled={loadingMore}
                     />
                 </div>

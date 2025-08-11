@@ -8,6 +8,7 @@ import CustomButton from '../ui/CustomButton'
 const WeeklyForecastSection = () => {
     const [forecastData, setForecastData] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [loadingMore, setLoadingMore] = useState(false)
 
     const mockForecastData = {
         location: "القاهرة",
@@ -119,6 +120,33 @@ const WeeklyForecastSection = () => {
         return iconMap[iconType] || '/images/rasid/sunny-storm.svg'
     }
 
+    const getWeatherDescription = (minTemp, maxTemp, iconType) => {
+        const avgTemp = (minTemp + maxTemp) / 2
+        if (avgTemp >= 35) return 'حار جداً'
+        if (avgTemp >= 30) return 'حار'
+        if (avgTemp >= 25) return 'معتدل ودافئ'
+        if (avgTemp >= 20) return 'معتدل'
+        if (avgTemp >= 15) return 'بارد نسبياً'
+        if (avgTemp >= 10) return 'بارد'
+
+        // وصف حسب نوع الطقس
+        if (iconType === 'rainy' || iconType === 'cloudy-moon-rain') return 'ماطر'
+        if (iconType === 'cloudy') return 'غائم'
+        if (iconType === 'sunny' || iconType === 'sunny-cloudy') return 'مشمس'
+        if (iconType === 'thunderstorm') return 'عاصف'
+
+        return 'صاف بشكل كبير'
+    }
+
+    const getHumidityDescription = (humidity) => {
+        if (humidity >= 80) return 'رطوبة عالية جداً'
+        if (humidity >= 70) return 'رطوبة عالية'
+        if (humidity >= 60) return 'رطوبة معتدلة'
+        if (humidity >= 50) return 'رطوبة منخفضة نسبياً'
+        if (humidity >= 40) return 'رطوبة منخفضة'
+        return 'رطوبة منخفضة جداً'
+    }
+
     if (loading) {
         return (
             <div className="relative bg-gradient-to-br from-orange-100 to-blue-100 min-h-screen">
@@ -132,7 +160,7 @@ const WeeklyForecastSection = () => {
 
     return (
         <section className="relative bg-rasid-gray-light overflow-hidden">
-            <div className="relative z-10 px-4 py-8">
+            <div className="relative z-10 py-8">
                 <div className="max-w-4xl mx-auto">
                     <MainText
                         title="قعات الطقس 7 ايام"
@@ -145,44 +173,63 @@ const WeeklyForecastSection = () => {
                         lineColor="bg-rasid-blue-light"
                     />
 
-                    <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+                    <div className="bg-white mx-4 rounded-2xl border border-gray-200 shadow-lg p-4 md:p-6">
                         <div className="space-y-4">
                             {forecastData.forecast.map((day, index) => (
-                                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                                    <div className="text-orange-500 text-lg font-semibold text-right min-w-[80px]">
-                                        {day.day} {day.date}
-                                    </div>
+                                <div key={index} className="grid grid-cols-2 gap-2 md:gap-6 items-center pb-3 border-b border-gray-100 last:border-b-0">
+                                    <div className='grid grid-cols-4 items-center'>
+                                        <div className="text-orange-500 text-xs md:text-lg font-semibold text-right">
+                                            {day.day} {day.date}
+                                        </div>
 
-                                    <div className="w-8 h-8 mx-4">
-                                        <img
-                                            src={getWeatherIcon(day.icon)}
-                                            alt="weather"
-                                            className="w-full h-full"
-                                        />
-                                    </div>
+                                        <div className="w-6 h-6 md:w-8 md:h-8 relative group cursor-pointer">
+                                            {/* Tooltip لوصف الطقس فوق الأيقونة */}
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-blue-500 text-white text-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
+                                                {getWeatherDescription(day.minTemp, day.maxTemp, day.icon)}
+                                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-blue-500"></div>
+                                            </div>
 
-                                    <div className="text-gray-700 text-lg font-semibold w-16 text-center">
-                                        {day.humidity}%
-                                    </div>
+                                            <img
+                                                src={getWeatherIcon(day.icon)}
+                                                alt="weather"
+                                                className="w-full h-full"
+                                            />
+                                        </div>
 
-                                    <div className="text-blue-400 text-lg font-semibold w-12 text-center">
-                                        {day.minTemp}°
-                                    </div>
+                                        <div className="text-gray-700 text-xs md:text-lg font-semibold text-center relative group cursor-pointer">
+                                            {/* Tooltip لوصف الرطوبة فوق النسبة المئوية */}
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-cyan-500 text-white text-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
+                                                {getHumidityDescription(day.humidity)}
+                                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-500"></div>
+                                            </div>
 
-                                    <div className="flex-1 mx-4">
-                                        <div className="h-2 bg-gradient-to-r from-yellow-200 to-yellow-400 rounded-full relative">
-                                            <div
-                                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full"
-                                                style={{
-                                                    width: `${((day.maxTemp - day.minTemp) / 20) * 100}%`,
-                                                    left: `${((day.minTemp - 15) / 20) * 100}%`
-                                                }}
-                                            ></div>
+                                            {day.humidity}%
+                                        </div>
+                                        <div className='hidden md:block md:col-span-2'>
                                         </div>
                                     </div>
+                                    <div className='grid grid-cols-6 gap-4 items-center'>
+                                        <div className='col-span-1 md:col-span-2'>
+                                        </div>
+                                        <div className="col-span-1 text-blue-400 text-xs md:text-lg font-semibold text-center">
+                                            {day.minTemp}°
+                                        </div>
 
-                                    <div className="text-gray-700 text-lg font-semibold w-12 text-center">
-                                        {day.maxTemp}°
+                                        <div className="col-span-3 md:col-span-2">
+                                            <div className="h-1.5 md:h-2 bg-gradient-to-r from-yellow-200 to-yellow-400 rounded-full relative">
+                                                <div
+                                                    className="absolute top-0 right-0 h-full bg-gradient-to-l from-yellow-300 to-yellow-500 rounded-full"
+                                                    style={{
+                                                        width: `${((day.maxTemp - day.minTemp) / 20) * 100}%`,
+                                                        right: `${((day.minTemp - 15) / 20) * 100}%`
+                                                    }}
+                                                ></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-span-1 text-gray-700 text-xs md:text-lg font-semibold text-center">
+                                            {day.maxTemp}°
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -191,7 +238,15 @@ const WeeklyForecastSection = () => {
 
                     <div className="text-center mt-8">
                         <CustomButton
-                            text="اعرض المزيد للطقس الساعي ل كل يوم"
+                            text={loadingMore ? "جاري التحميل..." : "اعرض المزيد للطقس الساعي ل كل يوم"}
+                            onClick={() => {
+                                setLoadingMore(true)
+                                setTimeout(() => {
+                                    console.log('More weekly forecast data')
+                                    setLoadingMore(false)
+                                }, 1000)
+                            }}
+                            loading={loadingMore}
                         />
                     </div>
                 </div>

@@ -11,6 +11,7 @@ const SubscriptionsPage = () => {
     const [plans, setPlans] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [loadingContact, setLoadingContact] = useState(false)
 
     useEffect(() => {
         fetchSubscriptionPlansData()
@@ -343,9 +344,14 @@ const SubscriptionsPage = () => {
                             هل تحتاج مساعدة في اختيار الخطة المناسبة؟
                         </p>
                         <CustomButton
-                            text="تواصل معنا"
-                            onClick={() => window.location.href = '/contact'}
-                            icon={<ArrowLeft className="w-5 h-5" />}
+                            text={loadingContact ? "جاري التحميل..." : "تواصل معنا"}
+                            onClick={() => {
+                                setLoadingContact(true)
+                                setTimeout(() => {
+                                    window.location.href = '/contact'
+                                }, 1000)
+                            }}
+                            loading={loadingContact}
                         />
                     </div>
                 </div>
